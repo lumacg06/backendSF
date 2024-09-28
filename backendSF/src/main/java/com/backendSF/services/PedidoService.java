@@ -1,9 +1,15 @@
 package com.backendSF.services;
 
+import java.util.List;
 
-import org.springframework.stereotype.Service;
+import com.backendSF.models.Pedido;
 
-@Service
-public class PedidoService {
-
+public interface PedidoService {
+    
+    List<Pedido> buscarPorFecha(String fecha);
+    List<Pedido> obtenerTodos();
+    Pedido obtenerPorId(Long id);
+    Pedido crearPedido(Pedido pedido);
+    Pedido actualizarPedido(Long id, Pedido nuevoPedido);
+    void eliminarPedido(Long id);
 }
