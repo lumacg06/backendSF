@@ -1,8 +1,6 @@
 package com.backendSF.services;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +14,8 @@ public class PedidoServiceImpl implements PedidoService {
     private PedidoRepository pedidoRepository;
 
     @Override
-    public List<Pedido> buscarPorFecha(String fecha) {
-        // Implementación del método
+    public List<Pedido> buscarPorNombre(String nombre) {
+        return pedidoRepository.findByNombre(nombre);
     }
 
     @Override
@@ -27,44 +25,34 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public Pedido obtenerPorId(Long id) {
-        return pedidoRepository.findById(id).orElse(null);
+        return pedidoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El pedido con el ID " + id + " no existe"));
     }
 
     @Override
     public Pedido crearPedido(Pedido pedido) {
-        // Validar que el pedido tenga todos los campos requeridos
         if (pedido.getFecha() == null || pedido.getTotal() == null || pedido.getEstado() == null || pedido.getFormaPago() == null) {
-            throw new RuntimeException("El pedido debe tener todos los campos requeridos");
+            throw new IllegalArgumentException("El pedido debe tener todos los campos requeridos");
         }
-        
-        // Guardar el pedido en la base de datos
         return pedidoRepository.save(pedido);
     }
 
     @Override
     public Pedido actualizarPedido(Long id, Pedido nuevoPedido) {
-        Pedido pedido = obtenerPorId(id);
-        if (pedido != null) {
-            pedido.setFecha(nuevoPedido.getFecha());
-            pedido.setTotal(nuevoPedido.getTotal());
-            pedido.setEstado(nuevoPedido.getEstado());
-            pedido.setFormaPago(nuevoPedido.getFormaPago());
-            return pedidoRepository.save(pedido);
+        if (pedidoRepository.existsById(id)) {
+            nuevoPedido.setId(id);
+            return pedidoRepository.save(nuevoPedido);
+        } else {
+            throw new IllegalArgumentException("El pedido con el ID " + id + " no existe");
         }
-        return null;
     }
 
     @Override
     public void eliminarPedido(Long id) {
-        pedidoRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Pedido> getPedidos() {
-        List<Pedido> pedidos = new ArrayList<>();
-        // add pedidos to the list
-        pedidos.add(new Pedido("pedido1"));
-        pedidos.add(new Pedido("pedido2"));
-        return pedidos;
+        if (pedidoRepository.existsById(id)) {
+            pedidoRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("El pedido con el ID " + id + " no existe");
+        }
     }
 }

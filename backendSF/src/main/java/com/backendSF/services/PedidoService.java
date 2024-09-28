@@ -6,7 +6,7 @@ import com.backendSF.models.Pedido;
 
 public interface PedidoService {
     
-    List<Pedido> buscarPorFecha(String fecha);
+    List<Pedido> buscarPorNombre(String nombre);
     List<Pedido> obtenerTodos();
     Pedido obtenerPorId(Long id);
     Pedido crearPedido(Pedido pedido);
