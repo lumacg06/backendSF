@@ -1,11 +1,11 @@
 package com.backendSF.services;
 
 import java.util.List;
-import com.backendSF.models.Usuario;
-import com.backendSF.repositories.UsuarioRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.backendSF.models.Usuario;
+import com.backendSF.repositories.UsuarioRepository;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -25,7 +25,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario obtenerPorId(Long id) {
-        return usuarioRepository.findById(id).orElse(null);
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario con el ID " + id + " no existe"));
     }
 
     @Override
@@ -35,19 +36,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Usuario actualizarUsuario(Long id, Usuario nuevoUsuario) {
-        Usuario usuario = obtenerPorId(id);
-        if (usuario != null) {
-            usuario.setNombre(nuevoUsuario.getNombre());
-            usuario.setApellido(nuevoUsuario.getApellido());
-            usuario.setEmail(nuevoUsuario.getEmail());
-            return usuarioRepository.save(usuario);
+        if (usuarioRepository.existsById(id)) {
+            nuevoUsuario.setId(id);
+            return usuarioRepository.save(nuevoUsuario);
         } else {
-            return null;
+            throw new IllegalArgumentException("El usuario con el ID " + id + " no existe");
         }
     }
 
     @Override
     public void eliminarUsuario(Long id) {
-        usuarioRepository.deleteById(id);
+        if (usuarioRepository.existsById(id)) {
+            usuarioRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("El usuario con el ID " + id + " no existe");
+        }
     }
 }

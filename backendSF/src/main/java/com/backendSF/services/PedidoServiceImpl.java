@@ -15,7 +15,7 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public List<Pedido> buscarPorNombre(String nombre) {
-        return pedidoRepository.findByNombre(nombre);
+        return pedidoRepository.findByNombreContaining(nombre);
     }
 
     @Override

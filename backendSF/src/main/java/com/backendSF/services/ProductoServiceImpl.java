@@ -1,11 +1,11 @@
 package com.backendSF.services;
 
 import java.util.List;
-import com.backendSF.models.Producto;
-import com.backendSF.repositories.ProductoRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.backendSF.models.Producto;
+import com.backendSF.repositories.ProductoRepository;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -25,7 +25,8 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public Producto obtenerPorId(Long id) {
-        return productoRepository.findById(id).orElse(null);
+        return productoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El producto con el ID " + id + " no existe"));
     }
 
     @Override
@@ -35,14 +36,11 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public Producto actualizarProducto(Long id, Producto nuevoProducto) {
-        Producto producto = obtenerPorId(id);
-        if (producto != null) {
-            producto.setNombre(nuevoProducto.getNombre());
-            producto.setDescripcion(nuevoProducto.getDescripcion());
-            producto.setPrecio(nuevoProducto.getPrecio());
-            return productoRepository.save(producto);
+        if (productoRepository.existsById(id)) {
+            nuevoProducto.setId(id);
+            return productoRepository.save(nuevoProducto);
         } else {
-            return null;
+            throw new IllegalArgumentException("El producto con el ID " + id + " no existe");
         }
     }
 
