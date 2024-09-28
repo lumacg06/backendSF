@@ -1,18 +1,15 @@
 package com.backendSF.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
+import com.backendSF.models.Producto;
 
-@Service
-public class ProductoService {
-    @Autowired
-    private ProductoRepository productoRepository;
+public interface ProductoService {
     
-    public Producto crearProducto(Producto producto) {
-        return productoRepository.save(producto);
-    }
+    List<Producto> buscarPorNombre(String nombre);
+    List<Producto> obtenerTodos();
+    Producto obtenerPorId(Long id);
+    Producto crearProducto(Producto producto);
+    Producto actualizarProducto(Long id, Producto nuevoProducto);
+    void eliminarProducto(Long id);
     
-    public List<Producto> getProductos() {
-        return productoRepository.findAll();
-    }
 }

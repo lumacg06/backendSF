@@ -1,18 +1,15 @@
 package com.backendSF.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
+import com.backendSF.models.Usuario;
 
-@Service
-public class UsuarioService {
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+public interface UsuarioService {
     
-    public Usuario crearUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
-    }
+    List<Usuario> buscarPorNombre(String nombre);
+    List<Usuario> obtenerTodos();
+    Usuario obtenerPorId(Long id);
+    Usuario crearUsuario(Usuario usuario);
+    Usuario actualizarUsuario(Long id, Usuario nuevoUsuario);
+    void eliminarUsuario(Long id);
     
-    public List<Usuario> getUsuarios() {
-        return usuarioRepository.findAll();
-    }
 }
